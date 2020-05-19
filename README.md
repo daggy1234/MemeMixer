@@ -34,6 +34,7 @@ from io import BytesIO
 
 
 **This is a complicated and requires a lot of knowledge. Please learn asynchronous python programming ie Aiohttp etc. Libraries like django are used for url validation.**
+This was made for a server.
 Use the following links to get help!
 
 **Official discord.py server**: https://discord.gg/dpy
