@@ -10,7 +10,7 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
-along with MemeMixerBot. If not, see <https://www.gnu.org/licenses/>.
+along with MemeMixerBot. If not, see <https://www.gnu.org/licenses/>.   
 """
 
 import discord
@@ -115,7 +115,7 @@ class mememix(commands.Cog):
                                 if str(reaction.emoji) == '\U0000274e':
                                     if user.guild_permissions.manage_guild:
                                         embed = discord.Embed(title='Memix Results!')
-                                        channel = self.bot.get_channel(710470130680987648)
+                                        channel = self.bot.get_channel(int(os.environ['channel']))
                                         winndex = 0
                                         ma = -999999999999999999999999999999999999999999999
                                         for i in range(0,3):
@@ -171,7 +171,7 @@ class mememix(commands.Cog):
                             continue
 
             except asyncio.TimeoutError:
-                channel = self.bot.get_channel(710470130680987648)
+                channel = self.bot.get_channel(int(os.environ['channel']))
                 embed = discord.Embed(title='Memix Results!')
                 winndex = 0
                 ma = -999999999999999999999999999999999999999999999
@@ -206,7 +206,7 @@ class mememix(commands.Cog):
     @commands.is_owner()
     async def voting(self,ctx):
         """ tests the voting system (only the owner can run it) Please do not run this command"""
-        channel = self.bot.get_channel(710470130680987648)
+        channel = self.bot.get_channel(int(os.environ['channel']))
         self.mlist = []
         memeurllist = ['https://media.discordapp.net/attachments/711563666943639582/711897308836397076/un82ifsnvge31.png','https://media.discordapp.net/attachments/711889053192290305/711897237629698138/images_16.jpeg','https://media.discordapp.net/attachments/711556060376465478/711896804324802560/blurple.png']
         await ctx.send('All memes have been submitted')
@@ -329,7 +329,7 @@ Mixer, please DM your meme to the  <@711503516778233886> , me. Please make sure 
                 return await ctx.send('Mixer cancelled')
             else:
                 peopleuvoted = []
-                channel = self.bot.get_channel(710470130680987648)
+                channel = self.bot.get_channel(int(os.environ['channel']))
 
                 
                 await ctx.send('All memes have been submitted')
@@ -340,6 +340,9 @@ Mixer, please DM your meme to the  <@711503516778233886> , me. Please make sure 
                     msg = await channel.send(embed=embed)
                     self.mlist.append(msg)
                     await msg.add_reaction('<:upvote:700689655607197746>')
+                guild = ctx.guild
+                rol = guild.get_role(int(os.environ['role']))
+                await channel.send(f'{rol.mention}, Time to vote!')
                 self.commandexec = True
                 self.bot.gamecount+=1    
 
@@ -405,7 +408,7 @@ async def on_command_error(ctx,error):
         embed = discord.Embed(title='MIXER UNKOWN ERROR OCCURED',description=f'```python\n{error}\n ```\nThe command {ctx.invoked_with} caused the error\n**Author:**{name}\n**Server:**{server}',color=ctx.guild.me.color)
         embed.add_field(name='SENT', value="Your error has been sent to my creator's bug channel")
         nemb =  discord.Embed(title='MIXER UNKOWN ERROR OCCURED',description=f'```python\n{traceback_text}\n ```\nThe command {ctx.invoked_with} caused the error\n**Author:**{name}\n**Server:**{server}',color=ctx.guild.me.color)
-        channel = bot.get_channel(711925873435213846)
+        channel = bot.get_channel(int(os.environ['bugs']))
         await channel.send(embed=nemb)
         await ctx.send(embed=embed)
 

@@ -28,7 +28,10 @@ from io import BytesIO
 
 * Change the Channel Id's (these are a private servers)
 * Use your own Reddit credentials
-* Please generate a toke using a develope application
+* Please generate a token using a develope application at discord
+* Please replace all the channel ids
+* The emojis are custom, replace them with your own or use standard unicode
+
 
 **This is a complicated and requires a lot of knowledge. Please learn asynchronous python programming ie Aiohttp etc. Libraries like django are used for url validation.**
 Use the following links to get help!
