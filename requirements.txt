@@ -1,3 +1,7 @@
 pyyaml
 discord
 asyncio
+Pillow
+django
+aiohttp
+praw

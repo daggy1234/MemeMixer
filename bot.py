@@ -33,7 +33,7 @@ async def getbyt(url):
                 else:
                     return False
                 del r
-def postmeme(byt):
+def postmeme(title,byt):
     reddit = praw.Reddit(client_id = bot.id,
                          client_secret = bot.secret,
                          user_agent = bot.id,
@@ -48,7 +48,6 @@ def postmeme(byt):
         img.paste(wthf,(0,y),wthf)
         img.save('meme.png')
         image = 'meme.png'
-        title = 'This is a test of the uploading feature!'
         sub = reddit.subreddit('MemeMixGame').submit_image(title,image,timeout=30.0)
         y = sub.permalink
         furls = f'https://www.reddit.com{y}'
@@ -122,10 +121,11 @@ class mememix(commands.Cog):
                                         await channel.send(f'{self.mixer[winndex].mention} COngrats on the win')
                                         msg = await channel.fetch_message(mis[winndex])
                                         e = msg.embeds[0]
-                                        url = e.image 
+                                        url = (e.image.url)
+                                        title = f"{self.mixer[winndex].display_name} 's Meme for MemeMix round {self.bot.gamecount}"
                                         async with ctx.typing():
                                             byt = await getbyt(url)
-                                            ur = postmeme(byt)
+                                            ur = postmeme(title,byt)
                                             return await ctx.send(ur)
                                             break
                                     else:
@@ -152,6 +152,8 @@ class mememix(commands.Cog):
                                 await reaction.message.remove_reaction(reaction,user)
                         except asyncio.TimeoutError:
                             continue
+                        except asyncio.CancelledError:
+                            continue
 
             except asyncio.TimeoutError:
                 channel = self.bot.get_channel(710470130680987648)
@@ -176,10 +178,11 @@ class mememix(commands.Cog):
                 await channel.send(f'{self.mixer[winndex].mention} COngrats on the win')
                 msg = await channel.fetch_message(mis[winndex])
                 e = msg.embeds[0]
-                url = e.image
+                url = str(e.image.url)
+                title = f"{self.mixer[winndex].display_name} 's Meme for MemeMix round {self.bot.gamecount}"
                 async with ctx.typing(): 
                     byt = await getbyt(url)
-                    ur = postmeme(byt)
+                    ur = postmeme(title,byt)
                     return await ctx.send(ur)
                 
         else:
