@@ -15,14 +15,14 @@ from async_timeout import timeout
 bot = commands.Bot(command_prefix = commands.when_mentioned_or('.'))
 bot.currentgames = []
 bot.gamecount = 0
-with open(r'data.yml') as file:
-    tokend = yaml.load(file,Loader=yaml.FullLoader)
-    bot.token = tokend['token']
-    bot.secret = tokend['secret']
-    bot.id = tokend['id']
-    bot.username = tokend['username']
-    bot.password = tokend['password']
-    file.close()
+# with open(r'data.yml') as file:
+#     tokend = yaml.load(file,Loader=yaml.FullLoader)
+#     bot.token = tokend['token']
+#     bot.secret = tokend['secret']
+#     bot.id = tokend['id']
+#     bot.username = tokend['username']
+#     bot.password = tokend['password']
+#     file.close()
 async def getbyt(url):
     async with aiohttp.ClientSession() as session:
             async with session.get(url) as r:
@@ -34,11 +34,11 @@ async def getbyt(url):
                     return False
                 del r
 def postmeme(title,byt):
-    reddit = praw.Reddit(client_id = bot.id,
-                         client_secret = bot.secret,
-                         user_agent = bot.id,
-                         username = bot.username,
-                         password = bot.password)
+    reddit = praw.Reddit(client_id = os.environ['id'],
+                         client_secret = os.environ['secret'],
+                         user_agent = os.environ['user_agent'],
+                         username = os.environ['username'],
+                         password = os.environ['password'])
     with Image.open(BytesIO(byt)) as img:
         size = img.size
         wmark = Image.open('watermark.png')
@@ -404,5 +404,5 @@ async def on_command_error(ctx,error):
 
 
 
-
+token = os.environ['token']
 bot.run(bot.token)
