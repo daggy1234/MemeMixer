@@ -405,4 +405,4 @@ async def on_command_error(ctx,error):
 
 
 token = os.environ['token']
-bot.run(bot.token)
+bot.run(token)
