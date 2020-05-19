@@ -82,9 +82,9 @@ class mememix(commands.Cog):
     """ The main and real game"""
     def __init__(self,bot):
         self.bot = bot
-        self.mlist = None
+        ctx.mlist = None
         self.commandexec = False
-        self.mixer = None
+        ctx.mixer = None
         self._original_help_command = bot.help_command
         bot.help_command = MyHelpCommand()
         bot.help_command.cog = self
@@ -92,9 +92,9 @@ class mememix(commands.Cog):
     
     
     async def cog_after_invoke(self, ctx):
-        print(self.mlist)
+        print(ctx.mlist)
         mis = []
-        for e in self.mlist:
+        for e in ctx.mlist:
             mis.append(e.id)
 
         print(self.commandexec)
@@ -113,7 +113,7 @@ class mememix(commands.Cog):
                             reaction,user = await self.bot.wait_for('reaction_add',timeout=2.0,check=votecheck)
                             if (str(reaction.emoji) in ['<:upvote:700689655607197746>','\U0000274e']):
                                 if str(reaction.emoji) == '\U0000274e':
-                                    if user.guild_permissions.manage_guild:
+                                    if (user.guild_permissions.manage_guild) or (user.id == 491174779278065689):
                                         embed = discord.Embed(title='Memix Results!')
                                         channel = self.bot.get_channel(int(os.environ['channel']))
                                         winndex = 0
@@ -133,11 +133,11 @@ class mememix(commands.Cog):
                                         Meme 3: {votes[2]}
                                         The winner is Meme {winndex+1}''')
                                         await channel.send(embed=embed)
-                                        await channel.send(f'{self.mixer[winndex].mention} COngrats on the win')
+                                        await channel.send(f'{ctx.mixer[winndex].mention} Congrats on the win')
                                         msg = await channel.fetch_message(mis[winndex])
                                         e = msg.embeds[0]
                                         url = (e.image.url)
-                                        title = f"{self.mixer[winndex].display_name} 's Meme for MemeMix round {self.bot.gamecount}"
+                                        title = f"{ctx.mixer[winndex].display_name} 's Meme for MemeMix round {self.bot.gamecount}"
                                         async with ctx.typing():
                                             byt = await getbyt(url)
                                             ur = postmeme(title,byt)
@@ -190,11 +190,11 @@ class mememix(commands.Cog):
     Meme 3: {votes[2]}
     The winner is Meme {winndex+1}''')
                 await channel.send(embed=embed)
-                await channel.send(f'{self.mixer[winndex].mention} COngrats on the win')
+                await channel.send(f'{ctx.mixer[winndex].mention} Congrats on the win')
                 msg = await channel.fetch_message(mis[winndex])
                 e = msg.embeds[0]
                 url = str(e.image.url)
-                title = f"{self.mixer[winndex].display_name} 's Meme for MemeMix round {self.bot.gamecount}"
+                title = f"{ctx.mixer[winndex].display_name} 's Meme for MemeMix round {self.bot.gamecount}"
                 async with ctx.typing(): 
                     byt = await getbyt(url)
                     ur = postmeme(title,byt)
@@ -207,22 +207,22 @@ class mememix(commands.Cog):
     async def voting(self,ctx):
         """ tests the voting system (only the owner can run it) Please do not run this command"""
         channel = self.bot.get_channel(int(os.environ['channel']))
-        self.mlist = []
+        ctx.mlist = []
         memeurllist = ['https://media.discordapp.net/attachments/711563666943639582/711897308836397076/un82ifsnvge31.png','https://media.discordapp.net/attachments/711889053192290305/711897237629698138/images_16.jpeg','https://media.discordapp.net/attachments/711556060376465478/711896804324802560/blurple.png']
         await ctx.send('All memes have been submitted')
         for i in range(0,3):
             embed = discord.Embed(title = f'Test has submitted his meme')
             embed.set_image(url=memeurllist[i])
             msg = await channel.send(embed=embed)
-            self.mlist.append(msg)
+            ctx.mlist.append(msg)
             await msg.add_reaction('<:upvote:700689655607197746>')
         self.commandexec = True
                     
     @commands.command()
     @commands.max_concurrency(1,commands.BucketType.guild)
     async def creategame(self,ctx):
-        self.mixer = []
-        self.mlist = []
+        ctx.mixer = []
+        ctx.mlist = []
         """ Creates and runs a mememix game to play 
         
         Please not eyou require 3 players and a 30 mins to make the meme"""
@@ -268,7 +268,7 @@ class mememix(commands.Cog):
                 capt = []
                 temp = []
                 l = scrambled(players)
-                self.mixer = l
+                ctx.mixer = l
                 #mixer = 0,1,2
                 #capt = 2,0,1
                 #temp = 1,2,0
@@ -282,13 +282,13 @@ class mememix(commands.Cog):
                 
             def check(message,turns):
                 return(
-                    message.author == self.mixer[turns] and message.guild == None and not user.bot and (message.content.lower().startswith('submit') or message.content.lower().startswith('cancel') ))
+                    message.author == ctx.mixer[turns] and message.guild == None and not user.bot and (message.content.lower().startswith('submit') or message.content.lower().startswith('cancel') ))
             try:
                 async with timeout(5400.0):
                     for turns in range(0,3):
                         c = capt[turns]
                         t = temp[turns]
-                        m = self.mixer[turns]
+                        m = ctx.mixer[turns]
                         embed = discord.Embed(title=f'Mixer Cycle {self.bot.gamecount+1}: Round {turns+1}')
                         embed.description = (f'''Caption: {c.mention}\nTemplate: {t.mention}\nMixer: {m.mention}\n Please send your captions and template to the Mixer.
 Mixer, please DM your meme to the  <@711503516778233886> , me. Please make sure to use the keyword `submit` while submitting.''')
@@ -305,22 +305,22 @@ Mixer, please DM your meme to the  <@711503516778233886> , me. Please make sure 
                                                 try:
                                                     image_url = msg.attachments[0].url
                                                     memeurllist.append(image_url)
-                                                    await self.mixer[turns].send('Recieved your submission!')
-                                                    embed = discord.Embed(title = f'{self.mixer[turns].display_name} has submitted their meme')
+                                                    await ctx.mixer[turns].send('Recieved your submission!')
+                                                    embed = discord.Embed(title = f'{ctx.mixer[turns].display_name} has submitted their meme')
                                                     embed.set_image(url=image_url)
                                                     await ctx.send(embed=embed)
                                                     break
                                                 except:
-                                                    await self.mixer[turns].send('I was unable to use the attachment you provided')
+                                                    await ctx.mixer[turns].send('I was unable to use the attachment you provided')
                                                     continue
                                             else:
-                                                await self.mixer[turns].send('Hey do send the meme asap')
+                                                await ctx.mixer[turns].send('Hey do send the meme asap')
                                                 continue
                                             
                                     except asyncio.TimeoutError:
                                         continue
                         except asyncio.TimeoutError:
-                            return await ctx.send(f'{self.mixer[turns].mention}You did not submit a meme. So the game was cancelled')
+                            return await ctx.send(f'{ctx.mixer[turns].mention}You did not submit a meme. So the game was cancelled')
                             break
                         turns+=1
 
@@ -335,10 +335,10 @@ Mixer, please DM your meme to the  <@711503516778233886> , me. Please make sure 
                 await ctx.send('All memes have been submitted')
                 await channel.send(f'Memeix Cycle {self.bot.gamecount+1}')
                 for i in range(0,3):
-                    embed = discord.Embed(title = f'{self.mixer[i].display_name} has submitted their meme')
+                    embed = discord.Embed(title = f'{ctx.mixer[i].display_name} has submitted their meme')
                     embed.set_image(url=memeurllist[i])
                     msg = await channel.send(embed=embed)
-                    self.mlist.append(msg)
+                    ctx.mlist.append(msg)
                     await msg.add_reaction('<:upvote:700689655607197746>')
                 guild = ctx.guild
                 rol = guild.get_role(int(os.environ['role']))
