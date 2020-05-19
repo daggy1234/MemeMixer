@@ -335,7 +335,7 @@ Mixer, please DM your meme to the  <@711503516778233886> , me. Please make sure 
                 await ctx.send('All memes have been submitted')
                 await channel.send(f'Memeix Cycle {self.bot.gamecount+1}')
                 for i in range(0,3):
-                    embed = discord.Embed(title = f'{self.mixer[i].mention} has submitted their meme')
+                    embed = discord.Embed(title = f'{self.mixer[i].display_name} has submitted their meme')
                     embed.set_image(url=memeurllist[i])
                     msg = await channel.send(embed=embed)
                     self.mlist.append(msg)
