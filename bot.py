@@ -82,9 +82,7 @@ class mememix(commands.Cog):
     """ The main and real game"""
     def __init__(self,bot):
         self.bot = bot
-        ctx.mlist = None
         self.commandexec = False
-        ctx.mixer = None
         self._original_help_command = bot.help_command
         bot.help_command = MyHelpCommand()
         bot.help_command.cog = self
