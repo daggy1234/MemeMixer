@@ -2,7 +2,9 @@
 A fun meme generator game involving 3 people. It's a bot for discord. It's based on a game where one person 
 
 ### Discord Bot
-` Please note  this bot is built on the discord.py library. You can see the link here [Discord.py Library](https://github.com/Rapptz/discord.py) `
+` Please note  this bot is built on the discord.py library. You can see the link here [Discord.py Library]
+[![Run on Repl.it](https://repl.it/badge/github/Daggy1234/MemeMixer)](https://repl.it/github/Daggy1234/MemeMixer)
+(https://github.com/Rapptz/discord.py) `
 
 ```python
 import discord
